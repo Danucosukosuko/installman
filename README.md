@@ -1,6 +1,7 @@
 # installman
 
-![installman-static-512x512](https://github.com/user-attachments/assets/4b560578-1b3c-44cd-88db-450d5c97d861)
+![installman-static-128x128](https://github.com/user-attachments/assets/8a9ecdde-7500-4898-acb1-9af5c12d5a3a)
+
 
 
 Un administrador de paquetes para Windows (Posteriormente será para Linux y posiblemente macOS) para instalar paquetes
