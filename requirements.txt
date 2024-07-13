@@ -1,0 +1,5 @@
+requests
+cryptography
+urllib3
+tqdm
+termcolor
