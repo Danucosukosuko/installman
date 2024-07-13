@@ -9,6 +9,10 @@ Un administrador de paquetes para Windows (Posteriormente será para Linux y pos
 #### Ejecutar como administrador.
 
 
+## Prerequisitos
+
+Usar `pip install -r requirements.txt`
+
 Argumentos:
 
 `install Nombrepaquete` Para instalar un paquete
