@@ -21,6 +21,10 @@ Argumentos:
 
 `update` Para actualizar todos los paquetes instalados vía Installman
 
-# PARA LOS QUE QUIERAN CREAR SU PROPIO REPOSITORIO CON PAQUETES
+# PARA LOS QUE QUIERAN CREAR SU PROPIO REPOSITORIO CON PAQUETES E INSTALLMAN CUSTOM
 
 Usar createkey.py para crear una clave con Fernet para tu repositorio, posteriormente crear un archivo key.iky en el repositorio
+
+Hay que modificar las siguientes líneas
+
+Modificar la línea `KEY_URL = "https://github.com/danucosukosuko/installmanpkgs/raw/main/key.iky"` y poner vuestro nombre y nombre de rep
