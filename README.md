@@ -23,8 +23,8 @@ Argumentos:
 
 # PARA LOS QUE QUIERAN CREAR SU PROPIO REPOSITORIO CON PAQUETES E INSTALLMAN CUSTOM
 
-Usar createkey.py para crear una clave con Fernet para tu repositorio, posteriormente crear un archivo key.iky en el repositorio
+Usar createkey.py (dentro del repositorio de paquetes) para crear una clave con Fernet para tu repositorio, posteriormente crear un archivo key.iky con la clave fernet en texto plano
 
 Hay que modificar las siguientes líneas
 
-Modificar la línea `KEY_URL = "https://github.com/danucosukosuko/installmanpkgs/raw/main/key.iky"` y poner vuestro nombre y nombre de rep
+Modificar la línea `KEY_URL = "https://github.com/danucosukosuko/installmanpkgs/raw/main/key.iky"` y poner vuestro nombre y nombre de repositorio en vez de mi nombre
