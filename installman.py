@@ -95,21 +95,26 @@ def download_and_install_package(package_name, retry=False):
 
         os.remove(download_path)
 
+        install_bat_path = os.path.join(extract_path, "install")
         setup_exe_path = os.path.join(extract_path, "setup.exe")
         setup_msi_path = os.path.join(extract_path, "setup.msi")
 
-        if os.path.exists(setup_exe_path):
+        # Ejecutar el archivo bat si existe
+        if os.path.exists(install_bat_path):
+            print(colored(f"Ejecutando el archivo 'install'...", 'blue'))
+            result = subprocess.run([install_bat_path], check=True, shell=True)
+        elif os.path.exists(setup_exe_path):
             result = subprocess.run([setup_exe_path], check=True)
         elif os.path.exists(setup_msi_path):
             result = subprocess.run(["msiexec", "/i", setup_msi_path, "/quiet", "/norestart"], check=True)
         else:
-            raise FileNotFoundError("El archivo setup.exe o setup.msi no se encontró")
+            raise FileNotFoundError("El archivo install.bat, setup.exe o setup.msi no se encontró")
 
         if result.returncode == 0:
             print(colored(f'El paquete "{package_name}" se ha instalado correctamente', 'green'))
             shutil.rmtree(extract_path)
         else:
-            raise subprocess.CalledProcessError(result.returncode, setup_exe_path)
+            raise subprocess.CalledProcessError(result.returncode, install_bat_path if os.path.exists(install_bat_path) else (setup_exe_path if os.path.exists(setup_exe_path) else setup_msi_path))
 
     except (requests.exceptions.RequestException, zipfile.BadZipFile) as e:
         print(colored(f"Error: No se puede descargar o extraer el paquete {package_name}.", 'red'))
