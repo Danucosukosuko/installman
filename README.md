@@ -13,9 +13,9 @@ Un administrador de paquetes para Windows (Posteriormente será para Linux y pos
 
 Usar `pip install -r requirements.txt`
 
-Si quiere iniciar el programa sin descargarlo:
+Si quiere descargarlo:
 
-`curl https://raw.githubusercontent.com/Danucosukosuko/installman/main/installman.py | python`
+`curl https://raw.githubusercontent.com/Danucosukosuko/installman/main/installman.py >> installman.py`
 
 Argumentos:
 
