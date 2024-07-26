@@ -28,5 +28,7 @@ Usar createkey.py (dentro del repositorio de paquetes) para crear una clave con 
 Hay que modificar las siguientes líneas
 
 Modificar la línea `KEY_URL = "https://github.com/danucosukosuko/installmanpkgs/raw/main/key.iky"` y poner vuestro repositorio (Poner key.iky)
+
 Modificar la línea `response = requests.get("https://api.github.com/repos/danucosukosuko/installmanpkgs/contents")` y poner vuestro repositorio (Cuidado con no borrar `contents` y poner `api.github.com/repos`)
+
 Modificar la línea: `download_url = f"https://github.com/danucosukosuko/installmanpkgs/raw/main/{package_name}.zip"` y poner vuestro repositorio (Cuidado con no borrar `raw/main/{package_name}.zip`)
