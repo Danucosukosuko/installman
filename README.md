@@ -24,7 +24,7 @@ Argumentos:
 
 Se creará una carpeta: `C:\installman`
 
-En esa carpeta se creará un `data.dat` encriptado con fernet, ese archivo contiene los nombres de paquete encriptados 10 veces
+En esa carpeta se creará un `data.dat` encriptado con fernet, ese archivo contiene los nombres de paquete encriptados 10 veces. Data.dat sólo puede ser desencriptado con key.iky
 
 
 # PARA LOS QUE QUIERAN CREAR SU PROPIO REPOSITORIO CON PAQUETES E INSTALLMAN CUSTOM
