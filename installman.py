@@ -83,7 +83,6 @@ def download_and_install_package(package_name, retry=False):
         total_size = int(response.headers.get('content-length', 0))
         block_size = 1024
         progress_bar = tqdm(total=total_size, unit='iB', unit_scale=True, colour='blue')
-
         with open(download_path, 'wb') as file:
             for data in response.iter_content(block_size):
                 progress_bar.update(len(data))
@@ -95,24 +94,23 @@ def download_and_install_package(package_name, retry=False):
 
         os.remove(download_path)
 
-        install_bat_path = os.path.join(extract_path, "install")
+        install_bat_path = os.path.join(extract_path, "install.bat")
         setup_exe_path = os.path.join(extract_path, "setup.exe")
         setup_msi_path = os.path.join(extract_path, "setup.msi")
 
-        # Ejecutar el archivo bat si existe
+        # Ejecutar el archivo install si existe
         if os.path.exists(install_bat_path):
-            print(colored(f"Ejecutando el archivo 'install'...", 'blue'))
+            print(colored(f"El paquete puede contener configuraciones que se instalarán ahora...", 'green'))
             result = subprocess.run([install_bat_path], check=True, shell=True)
         elif os.path.exists(setup_exe_path):
             result = subprocess.run([setup_exe_path], check=True)
         elif os.path.exists(setup_msi_path):
             result = subprocess.run(["msiexec", "/i", setup_msi_path, "/quiet", "/norestart"], check=True)
         else:
-            raise FileNotFoundError("El archivo install.bat, setup.exe o setup.msi no se encontró")
+            raise FileNotFoundError("El archivo install, setup.exe o setup.msi no se encontró")
 
         if result.returncode == 0:
             print(colored(f'El paquete "{package_name}" se ha instalado correctamente', 'green'))
-            shutil.rmtree(extract_path)
         else:
             raise subprocess.CalledProcessError(result.returncode, install_bat_path if os.path.exists(install_bat_path) else (setup_exe_path if os.path.exists(setup_exe_path) else setup_msi_path))
 
