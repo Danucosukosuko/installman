@@ -21,6 +21,12 @@ Argumentos:
 
 `update` Para actualizar todos los paquetes instalados vía Installman
 
+
+Se creará una carpeta: `C:\installman`
+
+En esa carpeta se creará un `data.dat` encriptado con fernet, ese archivo contiene los nombres de paquete encriptados 10 veces
+
+
 # PARA LOS QUE QUIERAN CREAR SU PROPIO REPOSITORIO CON PAQUETES E INSTALLMAN CUSTOM
 
 Usar createkey.py (dentro del repositorio de paquetes) para crear una clave con Fernet para tu repositorio, posteriormente crear un archivo key.iky con la clave fernet en texto plano
