@@ -40,7 +40,7 @@ if secret_key:
     # Configurar la clave Fernet
     cipher_suite = Fernet(secret_key)
 else:
-    print(colored("No se pudo obtener la clave. Verifica la conexión o la disponibilidad de la URL.", 'red'))
+    print(colored("No se pudo obtener la clave. Verifica la conexión a internet.", 'red'))
     sys.exit(1)
 
 # Función para encriptar y desencriptar nombres de paquetes
