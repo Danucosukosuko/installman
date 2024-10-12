@@ -10,7 +10,7 @@ import urllib3
 from tqdm import tqdm
 from termcolor import colored
 import shutil
-import ctypes
+import ctypes  # Importar el módulo ctypes
 
 # URL del archivo de clave
 KEY_URL = "https://github.com/danucosukosuko/installmanpkgs/raw/main/key.iky"
@@ -24,27 +24,13 @@ DATA_FILE_PATH = os.path.join(INSTALLMAN_DIR, "data.dat")
 # Ruta del archivo retry.dat
 RETRY_FILE_PATH = os.path.join(INSTALLMAN_DIR, "retry.dat")
 
-# Función para verificar si el script se está ejecutando como administrador
+# Función para verificar si se está ejecutando como administrador
 def is_admin():
     try:
+        return os.getuid() == 0
+    except AttributeError:
+        # Para Windows
         return ctypes.windll.shell32.IsUserAnAdmin()
-    except:
-        return False
-
-# Función para reiniciar el script con privilegios de administrador
-def run_as_admin():
-    if not is_admin():
-        print(colored("Se necesitan privilegios de administrador para ejecutar este script.", 'red'))
-        # Reiniciar el script con privilegios de administrador
-        try:
-            # Crear un nuevo proceso para reiniciar el script
-            subprocess.call(['runas', '/user:Administradores', sys.executable] + sys.argv)
-        except Exception as e:
-            print(colored(f"No se pudo reiniciar el script: {str(e)}", 'red'))
-        sys.exit(1)
-
-# Verificar si se necesitan privilegios de administrador
-run_as_admin()
 
 # Función para obtener la clave desde la URL
 def get_secret_key():
@@ -209,6 +195,11 @@ if len(sys.argv) < 2:
     print("Uso: python installman.py [comando] [paquete]")
     sys.exit(1)
 
+# Verificar si se está ejecutando como administrador
+if not is_admin():
+    print(colored("Este script debe ser ejecutado como administrador.", 'red'))
+    sys.exit(1)
+
 command = sys.argv[1]
 
 if command == "install":
@@ -230,10 +221,8 @@ if command == "install":
 
 elif command == "update":
     update_packages()
-
 elif command == "list":
     show_installed_packages()
-
 else:
     print(f"Comando desconocido: {command}. Use 'install', 'update' o 'list'.")
     sys.exit(1)
