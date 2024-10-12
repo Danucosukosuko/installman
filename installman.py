@@ -10,7 +10,7 @@ import urllib3
 from tqdm import tqdm
 from termcolor import colored
 import shutil
-import ctypes  # Importar el módulo ctypes
+import ctypes
 
 # URL del archivo de clave
 KEY_URL = "https://github.com/danucosukosuko/installmanpkgs/raw/main/key.iky"
