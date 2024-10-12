@@ -2,10 +2,15 @@ import os
 import requests
 import zipfile
 import subprocess
+import base64
 from cryptography.fernet import Fernet, InvalidToken
+import hashlib
 import sys
+import urllib3
 from tqdm import tqdm
 from termcolor import colored
+import shutil
+import ctypes
 
 # URL del archivo de clave
 KEY_URL = "https://github.com/danucosukosuko/installmanpkgs/raw/main/key.iky"
@@ -19,13 +24,35 @@ DATA_FILE_PATH = os.path.join(INSTALLMAN_DIR, "data.dat")
 # Ruta del archivo retry.dat
 RETRY_FILE_PATH = os.path.join(INSTALLMAN_DIR, "retry.dat")
 
+# Función para verificar si el script se está ejecutando como administrador
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+
+# Función para reiniciar el script con privilegios de administrador
+def run_as_admin():
+    if not is_admin():
+        print(colored("Se necesitan privilegios de administrador para ejecutar este script.", 'red'))
+        # Reiniciar el script con privilegios de administrador
+        try:
+            # Crear un nuevo proceso para reiniciar el script
+            subprocess.call(['runas', '/user:Administradores', sys.executable] + sys.argv)
+        except Exception as e:
+            print(colored(f"No se pudo reiniciar el script: {str(e)}", 'red'))
+        sys.exit(1)
+
+# Verificar si se necesitan privilegios de administrador
+run_as_admin()
+
 # Función para obtener la clave desde la URL
 def get_secret_key():
     try:
         response = requests.get(KEY_URL)
         response.raise_for_status()  # Verifica si la solicitud fue exitosa
         return response.content.strip()
-    except requests.exceptions.RequestException:
+    except requests.exceptions.RequestException as e:
         print(colored("No se pueden encontrar los paquetes. Revise su conexión a internet e inténtelo de nuevo más tarde.", 'red'))
         sys.exit(1)
 
@@ -59,7 +86,7 @@ def get_available_packages():
         response.raise_for_status()
         packages = [item['name'] for item in response.json() if item['name'].endswith('.zip')]
         return packages
-    except requests.exceptions.RequestException:
+    except requests.exceptions.RequestException as e:
         print(colored("No se pueden encontrar los paquetes. Revise su conexión a internet e inténtelo de nuevo más tarde.", 'red'))
         sys.exit(1)
 
@@ -99,13 +126,8 @@ def download_and_install_package(package_name, retry=False):
             print(colored(f"El paquete puede contener configuraciones que se instalarán ahora...", 'green'))
             result = subprocess.run([install_bat_path], check=True, shell=True)
         elif os.path.exists(setup_exe_path):
-            try:
-                result = subprocess.run([setup_exe_path], check=True)
-            except subprocess.CalledProcessError as e:
-                if e.returncode == 740:  # Código de error de elevación
-                    print(colored("Se necesita permisos de administrador para ejecutar este instalador.", 'red'))
-                    print(colored("Ejecuta este script como administrador.", 'yellow'))
-                    return  # Termina la función
+            # Ejecutar setup.exe directamente
+            result = subprocess.run([setup_exe_path], check=True)
         elif os.path.exists(setup_msi_path):
             result = subprocess.run(["msiexec", "/i", setup_msi_path, "/quiet", "/norestart"], check=True)
         else:
@@ -116,10 +138,10 @@ def download_and_install_package(package_name, retry=False):
         else:
             raise subprocess.CalledProcessError(result.returncode, install_bat_path if os.path.exists(install_bat_path) else (setup_exe_path if os.path.exists(setup_exe_path) else setup_msi_path))
 
-    except (requests.exceptions.RequestException, zipfile.BadZipFile):
+    except (requests.exceptions.RequestException, zipfile.BadZipFile) as e:
         print(colored(f"Error: No se puede descargar o extraer el paquete {package_name}.", 'red'))
         sys.exit(1)
-    except subprocess.CalledProcessError:
+    except subprocess.CalledProcessError as e:
         print(colored(f"Ocurrió algún problema durante la instalación. Si quiere intentar instalar el programa pruebe con --retry-install", 'red'))
         if not retry:
             with open(RETRY_FILE_PATH, "wb") as retry_file:
@@ -201,18 +223,17 @@ if command == "install":
             os.remove(RETRY_FILE_PATH)
             download_and_install_package(package_name, retry=True)
         else:
-            print(colored("No se encontró ningún paquete para reintentar la instalación.", 'red'))
+            print(colored("No hay paquetes para reintentar la instalación.", 'red'))
+            sys.exit(1)
     else:
         download_and_install_package(package_name)
-        # Guardar el paquete instalado en data.dat
-        save_package_names([package_name])
 
 elif command == "update":
     update_packages()
 
-elif command == "--installed":
+elif command == "list":
     show_installed_packages()
 
 else:
-    print("Comando no reconocido. Los comandos disponibles son: install, update, --installed")
+    print(f"Comando desconocido: {command}. Use 'install', 'update' o 'list'.")
     sys.exit(1)
